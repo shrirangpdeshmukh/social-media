@@ -20,7 +20,9 @@
     "express": "^4.17.3",
     "express-mongo-sanitize": "^2.2.0",
     "google-auth-library": "^7.14.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.7",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "util": "^0.12.4"
   }
 }

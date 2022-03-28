@@ -1,6 +1,4 @@
-const dotenv = require("dotenv");
-dotenv.config();
-
+const config = require("../utils/config");
 const AppError = require("./../utils/appError");
 
 const handleCastErrorDB = (err) => {
@@ -99,7 +97,7 @@ module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
-  if (process.env.NODE_ENV === "development") {
+  if (config.NODE_ENV === "development") {
     sendErrorDev(err, req, res);
   } else {
     //let error = { ...err };
