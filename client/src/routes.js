@@ -13,7 +13,7 @@ const getRoutes = (user, setUser, load, setLoad) => {
           { path: "/home", element: <Home /> },
           { path: "/search", element: <Search /> },
           { path: "/create", element: <Create /> },
-          { path: "/profile", element: <Profile /> },
+          { path: "/profile", element: <Profile user={user}/> },
           { path: "/", element: <Navigate to="/home" replace /> },
           { path: "*", element: <Navigate to="/home" replace /> },
         ],
