@@ -25,7 +25,9 @@ const Layout = ({ setLoad, load, user, setUser }) => {
             <CircularProgress />
           </div>
         )}
-        <Outlet />
+        <div style={{ padding: "20px" }}>
+          <Outlet />
+        </div>
       </div>
     </div>
   );

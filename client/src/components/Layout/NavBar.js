@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { GoogleLogout } from "react-google-login";
 import { Avatar, IconButton } from "@mui/material";
 import {
+  AddRounded,
   HomeOutlined,
   Logout,
   PersonOutlineRounded,
@@ -50,7 +51,7 @@ const NavBar = ({ user, setUser, setLoad }) => {
 
   const navlink = window.location.pathname.split("/")[1];
 
-  const navitems = [
+  let navitems = [
     {
       path: "home",
       icon: HomeOutlined,
@@ -64,6 +65,13 @@ const NavBar = ({ user, setUser, setLoad }) => {
       icon: PersonOutlineRounded,
     },
   ];
+
+  if (user) {
+    navitems.splice(2, 0, {
+      path: "create",
+      icon: AddRounded,
+    });
+  }
 
   return (
     <div
