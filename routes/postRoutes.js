@@ -4,14 +4,15 @@ const fileController = require("../controllers/fileController");
 const authController = require("../controllers/authController");
 const Router = express.Router();
 
-Router.get("/", postController.getAllPosts);
+Router.get("/all", postController.getAllPosts);
 Router.get("/tags", postController.getPostsByTag);
+Router.get("/:postId", postController.getPost);
 
 Router.use(authController.verifyJwtToken, authController.loggedInUser);
 
 Router.post("/", fileController.uploadFiles, postController.createPost);
+Router.get("/", postController.getMyPosts);
 
-Router.get("/:postId", postController.getSinglePost);
 Router.patch("/:postId", postController.updatePost);
 Router.delete("/:postId", postController.deletePost);
 

@@ -130,8 +130,6 @@ const LoginButton = ({ setUser, load, setLoad }) => {
 };
 
 const Login = ({ setUser, load, setLoad }) => {
-  console.log("here");
-
   return (
     <div
       style={{

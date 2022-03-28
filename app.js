@@ -6,6 +6,7 @@ const app = express();
 
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
+const fileRoutes = require("./routes/fileRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const voteRoutes = require("./routes/voteRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -33,6 +34,7 @@ app.use("/api/search", searchRoute);
 app.use("/api/user", userRoutes);
 app.use("/api/vote", voteRoutes);
 app.use("/api/comment", commentRoutes);
+app.use("/api/files", fileRoutes);
 
 app.all("*", async (req, res, next) => {
   if (req.originalUrl.startsWith("/api")) {

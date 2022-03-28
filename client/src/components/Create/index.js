@@ -68,7 +68,7 @@ export default function Create({ user }) {
         console.log(res);
 
         const id = res.data.post._id;
-        // navigate(`/post/${id}`);
+        navigate(`/post/${id}`);
       })
       .catch((err) => {
         console.log(err);

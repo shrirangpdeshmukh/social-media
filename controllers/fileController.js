@@ -107,7 +107,9 @@ exports.getFiles = (req, res) => {
 // @route GET /files/:filename
 // @desc  Display single file object
 exports.getFile = (req, res) => {
-  gfs.files.findOne({ filename: req.filename }, (err, file) => {
+  const { filename } = req.params;
+
+  gfs.files.findOne({ filename }, (err, file) => {
     // Check if file
     if (!file || file.length === 0) {
       return res.status(404).json({

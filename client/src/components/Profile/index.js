@@ -1,37 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { Box } from "@mui/system";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 import {
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
   Grid,
   IconButton,
+  Modal,
+  TextField,
   Typography,
   useTheme,
-  Avatar,
-  Modal,
-  TextareaAutosize,
-  Button,
-  CircularProgress
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import EditIcon from '@mui/icons-material/Edit';
-import { Link as RouteLink } from "react-router-dom";
-import axios from "axios";
-
-import Post from "../Post/index";
-
+import EditIcon from "@mui/icons-material/Edit";
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #eee',
+  bgcolor: "background.paper",
+  border: "2px solid #eee",
   boxShadow: 24,
   p: 4,
 };
 
-const Profile = ({user}) => {
+const Profile = ({ user }) => {
+  const navigate = useNavigate();
+
   user.bio = "This is profile of a software developer";
   const theme = useTheme();
   const [isLoading, setLoading] = useState(true);
@@ -40,134 +38,131 @@ const Profile = ({user}) => {
   const [bio, setBio] = useState(user.bio);
   const [data, setData] = useState(bio);
 
-
-  console.log(user);
-
   useEffect(() => {
     //need to change api endpoints & token
-    axios.get(`http://localhost:3000/api/posts`, {
-      headers: {
-        "Authorization": "Bearer " + "token"
-      }
-    })
-    .then(res => {
-      isLoading(false);
-      setPosts(res.data.posts);
-    })
-    .catch(err => {
-      setLoading(false);
-      if(err.response) alert(err.resonse.data);
-      else alert(err.message);
-    
-    });
+    axios
+      .get("/api/posts/")
+      .then((res) => {
+        setLoading(false);
+        setPosts(res.data.posts);
+      })
+      .catch((err) => {
+        setLoading(false);
+        if (err.response) console.log(err.response.data);
+        else console.log(err.message);
+      });
   }, []);
 
   const updateBio = () => {
     //need to change api endpoints & token
-    axios.patch(`http://localhost:3000/user/profile`, bio, {
-      headers: {
-        "Authorization": "Bearer " + "token"
-      }
-    })
-    .then(res => {
-      setBio(res.data.bio);
-      setData(res.data.bio);
-    })
-    .catch(err => {
-      setData(bio);
-      if(err.response) alert(err.resonse.data);
-      else alert(err.message);
-    });
-
-  }
+    axios
+      .patch("/user/profile", bio)
+      .then((res) => {
+        setBio(res.data.bio);
+        setData(res.data.bio);
+      })
+      .catch((err) => {
+        setData(bio);
+        if (err.response) alert(err.resonse.data);
+        else alert(err.message);
+      });
+  };
 
   return (
-    <Box>
-      <Box borderBottom="1px solid #ccc" padding="8px 20px">
-        <Grid container alignItems="center">
-          <Grid item sx={{ mr: "10px" }}>
-            <RouteLink to="/">
-              <IconButton>
-                <ArrowBackIcon />
-              </IconButton>
-            </RouteLink>
-          </Grid>
-
-          <Grid item>
-              <Typography variant="h6">
-                {user?.firstname}
-              </Typography>
-
-            {!isLoading && posts && (
-                <Typography sx={{ fontSize: "12px", color: "#555" }}>
-                  {posts.length || 0} posts {" "}
-                </Typography>
-            )}
-          </Grid>
-        </Grid>
-      </Box>
-
+    <Box style={{ width: "100%" }}>
       <Grid container>
-        <Grid item xs={12} md={3} mt={3} container justifyContent="center" alignItems="center"> 
-            <Avatar
-              alt="profile"
-              src={user.img}
-              sx={{ width: 120, height: 120 }}
+        <Grid
+          item
+          xs={12}
+          mt={3}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Avatar
+            alt="profile"
+            src={user.img}
+            sx={{ width: 120, height: 120 }}
           />
         </Grid>
 
-        <Grid item xs={10} md={5} mt={4} mb={2} 
-          container
-          direction="column"
-          alignItems="flex-start"
-        > 
-          <Typography variant="h6" sx={{ fontWeight: "500" }}>
-              {user.firstname}{" "}{user.lastname}
+        <Grid item xs={8} style={{ margin: "10px auto" }}>
+          <Typography variant="h4">
+            {user.firstname} {user.lastname}
           </Typography>
-          <Typography fontSize="16px" color="#333" padding="10px 0">
+          <Box style={{ position: "relative" }}>
+            <Typography fontSize="17px" color="#333" padding="10px 40px">
               {bio}
-          </Typography> 
-        </Grid>
-
-        <Grid item xs={2} md={3} md-mt={4} mt={0}
-          container
-          direction="column"
-          alignItems="flex-end"
-        > 
-          <IconButton>
-            <EditIcon
-              onClick={() => {console.log("click"); setModalStatus(true);}}/>
-          </IconButton>
+            </Typography>
+            <IconButton
+              style={{ position: "absolute", top: 0, right: 0 }}
+              onClick={() => {
+                setModalStatus(true);
+              }}
+            >
+              <EditIcon />
+            </IconButton>
+          </Box>
         </Grid>
       </Grid>
 
       <Grid container>
-        <Grid item xs={12} md={2} mt={5} ml={7}>
-            <Typography
-              display="inline-block"
-              variant="caption"
-              fontSize="16px"
-              marginX="1rem"
-              padding="6px 0"
-              fontWeight="500"
-              borderBottom={`4px solid ${theme.palette.primary.main}`}
-            >
-              My Posts
-            </Typography>
+        <Grid item xs={12}>
+          <Typography
+            display="inline-block"
+            variant="caption"
+            fontSize="16px"
+            padding="6px 0"
+            fontWeight="500"
+            borderBottom={`4px solid ${theme.palette.primary.main}`}
+          >
+            My Posts
+          </Typography>
         </Grid>
 
-        <Grid  item xs={12} p={1} mt={3} container spacing={2}>
-          {!isLoading && posts.map(post => (
-              <Grid item xs={12} md={4}><Post post={post}/></Grid>
-          ))}
-          {isLoading && <Grid item xs={12}><CircularProgress/></Grid>}
-          {!isLoading && posts.length ===0 && 
+        <Grid item xs={12} mt={3} container>
+          {!isLoading &&
+            posts.map((post, index) => {
+              return (
+                <Box
+                  key={"post-" + index}
+                  style={{
+                    height: "200px",
+                    maxWidth: "100%",
+                    overflow: "hidden",
+                    margin: "10px",
+                    borderRadius: "10px",
+                    boxShadow: "0px 0px 10px rgba(0,0,0,0.2)",
+                  }}
+                  component={Link}
+                  to={`/post/${post._id}`}
+                >
+                  <img
+                    src={"/api/files/" + post.image[0]}
+                    alt={"post-image-" + index}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Box>
+              );
+            })}
+          {isLoading && (
             <Grid item xs={12}>
-              <Typography  variant="h6" sx={{ fontWeight: "200" }}>
+              <CircularProgress />
+            </Grid>
+          )}
+          {!isLoading && posts.length === 0 && (
+            <Grid item xs={12}>
+              <Typography variant="h6" sx={{ fontWeight: "200" }}>
                 {"You do not have any posts yet !!!"}
-            </Typography>
-
-            </Grid>}
+              </Typography>
+            </Grid>
+          )}
         </Grid>
       </Grid>
 
@@ -185,25 +180,31 @@ const Profile = ({user}) => {
               </Typography>
             </Grid>
             <Grid item xs={12} mt={2}>
-              <TextareaAutosize
-                minRows={3}
-                style={{ width: 400, border: '1px solid #eee'}}
+              <TextField
+                multiline
+                rows={4}
+                style={{ width: 400, border: "1px solid #eee" }}
                 value={data}
-                onChange={e => setData(e.target.value)}
+                onChange={(e) => setData(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12} mt={2} 
+            <Grid
+              item
+              xs={12}
+              mt={2}
               container
               direction="column"
-              alignItems="flex-end">
-              <Button variant="contained" onClick={updateBio}>SAVE</Button>
+              alignItems="flex-end"
+            >
+              <Button variant="contained" onClick={updateBio}>
+                SAVE
+              </Button>
             </Grid>
           </Grid>
         </Box>
       </Modal>
     </Box>
   );
-}
-
+};
 
 export default Profile;

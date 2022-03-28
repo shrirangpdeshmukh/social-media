@@ -1,5 +1,13 @@
 import { Navigate } from "react-router-dom";
-import { Create, Home, Layout, Login, Profile, Search } from "./components";
+import {
+  Create,
+  Home,
+  Layout,
+  Login,
+  Post,
+  Profile,
+  Search,
+} from "./components";
 
 const getRoutes = (user, setUser, load, setLoad) => {
   if (user)
@@ -13,7 +21,8 @@ const getRoutes = (user, setUser, load, setLoad) => {
           { path: "/home", element: <Home /> },
           { path: "/search", element: <Search /> },
           { path: "/create", element: <Create /> },
-          { path: "/profile", element: <Profile user={user}/> },
+          { path: "/post/:id", element: <Post user={user} /> },
+          { path: "/profile", element: <Profile user={user} /> },
           { path: "/", element: <Navigate to="/home" replace /> },
           { path: "*", element: <Navigate to="/home" replace /> },
         ],
@@ -29,27 +38,13 @@ const getRoutes = (user, setUser, load, setLoad) => {
         ),
         children: [
           {
-            path: "/home",
+            path: "*",
             element: <Login setUser={setUser} load={load} setLoad={setLoad} />,
           },
           {
-            path: "/search",
+            path: "/",
             element: <Login setUser={setUser} load={load} setLoad={setLoad} />,
           },
-          {
-            path: "/profile",
-            element: <Login setUser={setUser} load={load} setLoad={setLoad} />,
-          },
-          {
-            path: "/create",
-            element: <Login setUser={setUser} load={load} setLoad={setLoad} />,
-          },
-          {
-            path: "/login",
-            element: <Login setUser={setUser} load={load} setLoad={setLoad} />,
-          },
-          { path: "/", element: <Navigate to="/home" replace /> },
-          { path: "*", element: <Navigate to="/home" replace /> },
         ],
       },
     ];
@@ -66,6 +61,10 @@ const getRoutes = (user, setUser, load, setLoad) => {
         {
           path: "/search",
           element: <Search />,
+        },
+        {
+          path: "/post/:id",
+          element: <Post />,
         },
         {
           path: "/profile",

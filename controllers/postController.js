@@ -7,7 +7,7 @@ const Posts = require("../models/postModel");
 const popOptions = [
   {
     path: "createdBy",
-    select: "firstname lastname",
+    select: "firstname lastname img",
   },
   {
     path: "votes",
@@ -22,7 +22,7 @@ const popOptions = [
   },
 ];
 
-//controller for GET requests on /posts endpoint
+//controller for GET requests on /posts/all endpoint
 exports.getAllPosts = catchAsync(async (req, res, next) => {
   let posts = await Posts.find().populate(popOptions).sort({ timestamp: -1 });
   res.status(200).json({
@@ -33,10 +33,10 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 });
 
 //controller for GET requests on /posts endpoint
-exports.getAllPostsOfAUser = catchAsync(async (req, res, next) => {
+exports.getMyPosts = catchAsync(async (req, res, next) => {
   let posts = await Posts.find({ createdBy: req.user._id })
     .populate(popOptions)
-    .sort({ timestamp: -1 });
+    .sort({ createdAt: -1 });
   res.status(200).json({
     status: "success",
     results: posts.length,
@@ -67,6 +67,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
     tags = tags.concat(t);
   }
   data.tags = tags;
+  data.createdBy = req.user._id;
 
   let post = await Posts.create(data);
   res.status(201).json({
@@ -92,10 +93,9 @@ exports.deletePosts = catchAsync(async (req, res, next) => {
 });
 
 //controller for GET requests on /posts/:postId endpoint
-exports.getSinglePost = catchAsync(async (req, res, next) => {
+exports.getPost = catchAsync(async (req, res, next) => {
   var post = await Posts.findOne({
     _id: req.params.postId,
-    createdBy: req.user._id,
   }).populate(popOptions);
 
   if (!post) {
