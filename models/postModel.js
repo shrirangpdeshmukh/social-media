@@ -8,8 +8,8 @@ const postSchema = new Schema(
       maxlength: 100,
     },
     image: {
-      type: String,
-      required: true,
+      type: [String],
+      minlength: 1,
     },
     createdBy: {
       type: Schema.Types.ObjectId,
