@@ -12,8 +12,8 @@ const postSchema = new Schema(
       required: true
     },
     image: {
-      type: String,
-      required: true,
+      type: [String],
+      minlength: 1,
     },
     createdBy: {
       type: Schema.Types.ObjectId,

@@ -18,7 +18,7 @@ app.use(morganMiddleware);
 app.use(cookieParser());
 app.use(mongoSanitize());
 app.enable("trust proxy");
-app.use(express.static(path.join(__dirname, "../../client/build")));
+app.use(express.static(path.join(__dirname, "/client/build")));
 
 app.get("/api/health", (req, res, next) => {
   res.send("Health Check is working fine!");
@@ -33,7 +33,7 @@ app.all("*", async (req, res, next) => {
       new AppError(`Can't find ${req.originalUrl} on this server!`, 404)
     );
   }
-  res.sendFile(path.join(__dirname, "../../client/build/index.html"));
+  res.sendFile(path.join(__dirname, "/client/build/index.html"));
 });
 
 app.use(globalErrorHandler);
