@@ -18,6 +18,10 @@ app.use(mongoSanitize());
 app.enable("trust proxy");
 app.use(express.static(path.join(__dirname, "../../client/build")));
 
+app.get("/api/health", (req, res, next) => {
+  res.send("Health Check is working fine!");
+});
+
 app.use("/api/auth", authRoutes);
 
 app.all("*", async (req, res, next) => {
