@@ -1,9 +1,10 @@
 const express = require("express");
 const postController = require("../controllers/postController");
+const fileController = require("../controllers/fileController");
 const Router = express.Router();
 
 Router.get("/", postController.getAllPosts);
-Router.post("/", postController.createPost);
+Router.post("/", fileController.uploadFiles, postController.createPost);
 Router.delete("/", postController.deletePosts);
 
 Router.get("/:postId", postController.getSinglePost);
