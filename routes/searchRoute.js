@@ -20,9 +20,7 @@ Router.get(
         user.firstname.toLowerCase().includes(query) ||
         user.lastname.toLowerCase().includes(query)
     );
-    const resultPosts = await Post.find({ tags: { $all: query } }).populate(
-      popOptions
-    );
+    const resultPosts = await Post.find({ tags: { $all: query } });
 
     res.status(200).json({
       posts: resultPosts,
