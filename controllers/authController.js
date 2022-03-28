@@ -97,11 +97,7 @@ exports.login = catchAsync(async (req, res, next) => {
   };
 
   res.cookie("jwt", jwtToken, cookieOptions);
-  res.status(200).json({
-    status: "success",
-    verification: true,
-    user,
-  });
+  res.send(user);
 });
 
 exports.logout = catchAsync(async (req, res, next) => {
