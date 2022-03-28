@@ -6,7 +6,9 @@ const getRoutes = (user, setUser, load, setLoad) => {
     return [
       {
         path: "/",
-        element: <Layout load={load} setUser={setUser} user={user} />,
+        element: (
+          <Layout load={load} setLoad={setLoad} setUser={setUser} user={user} />
+        ),
         children: [
           { path: "/home", element: <Home /> },
           { path: "/search", element: <Search /> },
@@ -21,7 +23,9 @@ const getRoutes = (user, setUser, load, setLoad) => {
     return [
       {
         path: "/",
-        element: <Layout load={load} setUser={setUser} user={user} />,
+        element: (
+          <Layout load={load} setLoad={setLoad} setUser={setUser} user={user} />
+        ),
         children: [
           {
             path: "/home",

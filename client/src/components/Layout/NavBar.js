@@ -1,12 +1,51 @@
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogout } from "react-google-login";
 import { Avatar, IconButton } from "@mui/material";
 import {
   HomeOutlined,
+  Logout,
   PersonOutlineRounded,
   SearchRounded,
 } from "@mui/icons-material";
 
-const NavBar = ({ user, setUser }) => {
+import { CLIENT_ID } from "../../constants";
+
+const LogoutButton = ({ setLoad }) => {
+  const logout = () => {
+    axios
+      .post("/api/auth/logout")
+      .then((res) => {
+        console.log(res);
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+        window.location.reload();
+      });
+  };
+
+  return (
+    <GoogleLogout
+      clientId={CLIENT_ID}
+      render={(renderProps) => {
+        return (
+          <IconButton
+            onClick={() => {
+              setLoad(true);
+              renderProps.onClick();
+            }}
+          >
+            <Logout fontSize="large" />
+          </IconButton>
+        );
+      }}
+      onLogoutSuccess={logout}
+    />
+  );
+};
+
+const NavBar = ({ user, setUser, setLoad }) => {
   const navigate = useNavigate();
 
   const navlink = window.location.pathname.split("/")[1];
@@ -58,6 +97,12 @@ const NavBar = ({ user, setUser }) => {
           </IconButton>
         );
       })}
+
+      {user && (
+        <div style={{ position: "absolute", bottom: 5 }}>
+          <LogoutButton setLoad={setLoad} />
+        </div>
+      )}
     </div>
   );
 };

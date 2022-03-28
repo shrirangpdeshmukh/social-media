@@ -2,10 +2,10 @@ import { Outlet } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import NavBar from "./NavBar";
 
-const Layout = ({ load, user, setUser }) => {
+const Layout = ({ setLoad, load, user, setUser }) => {
   return (
     <div style={{ display: "flex" }}>
-      <NavBar user={user} setUser={setUser} />
+      <NavBar user={user} setUser={setUser} setLoad={setLoad} />
       <div
         style={{
           borderRadius: "10px",
