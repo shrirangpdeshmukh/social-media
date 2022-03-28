@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const voteRoutes = require("./routes/voteRoutes");
+const userRoutes = require("./routes/userRoutes");
 const searchRoute = require("./routes/searchRoute");
 
 const AppError = require("./utils/appError");
@@ -29,6 +30,9 @@ app.get("/api/health", (req, res, next) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/search", searchRoute);
+app.use("/api/user", userRoutes);
+app.use("/api/vote", voteRoutes);
+app.use("/api/comment", commentRoutes);
 
 app.all("*", async (req, res, next) => {
   if (req.originalUrl.startsWith("/api")) {
