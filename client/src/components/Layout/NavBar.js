@@ -99,7 +99,7 @@ const NavBar = ({ user, setUser, setLoad }) => {
             ) : (
               <item.icon
                 fontSize="large"
-                color={navlink === item.path ? "primary" : "default"}
+                color={navlink === item.path ? "secondary" : "default"}
               />
             )}
           </IconButton>

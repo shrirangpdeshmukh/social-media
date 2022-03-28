@@ -30,23 +30,23 @@ const getRoutes = (user, setUser, load, setLoad) => {
         children: [
           {
             path: "/home",
-            element: <Login setUser={setUser} setLoad={setLoad} />,
+            element: <Login setUser={setUser} load={load} setLoad={setLoad} />,
           },
           {
             path: "/search",
-            element: <Login setUser={setUser} setLoad={setLoad} />,
+            element: <Login setUser={setUser} load={load} setLoad={setLoad} />,
           },
           {
             path: "/profile",
-            element: <Login setUser={setUser} setLoad={setLoad} />,
+            element: <Login setUser={setUser} load={load} setLoad={setLoad} />,
           },
           {
             path: "/create",
-            element: <Login setUser={setUser} setLoad={setLoad} />,
+            element: <Login setUser={setUser} load={load} setLoad={setLoad} />,
           },
           {
             path: "/login",
-            element: <Login setUser={setUser} setLoad={setLoad} />,
+            element: <Login setUser={setUser} load={load} setLoad={setLoad} />,
           },
           { path: "/", element: <Navigate to="/home" replace /> },
           { path: "*", element: <Navigate to="/home" replace /> },

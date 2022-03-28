@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Container } from "@mui/material";
 import NavBar from "./NavBar";
 
 const Layout = ({ setLoad, load, user, setUser }) => {
@@ -8,9 +8,9 @@ const Layout = ({ setLoad, load, user, setUser }) => {
       <NavBar user={user} setUser={setUser} setLoad={setLoad} />
       <div
         style={{
-          borderRadius: "10px",
           height: "100vh",
-          flex: "1",
+          width: "calc(100vw - 70px)",
+          overflow: "auto",
         }}
       >
         {load && (
@@ -25,9 +25,19 @@ const Layout = ({ setLoad, load, user, setUser }) => {
             <CircularProgress />
           </div>
         )}
-        <div style={{ padding: "20px" }}>
+        <Container
+          style={{
+            paddingTop: !load ? "20px" : "0px",
+            paddingBottom: !load ? "20px" : "0px",
+            boxSizing: "border-box",
+            minHeight: !load ? "100vh" : "0px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <Outlet />
-        </div>
+        </Container>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ const authController = require("../controllers/authController");
 const Router = express.Router();
 
 Router.get("/", postController.getAllPosts);
+Router.get("/tags", postController.getPostsByTag);
 
 Router.use(authController.verifyJwtToken, authController.loggedInUser);
 

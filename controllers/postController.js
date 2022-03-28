@@ -7,27 +7,39 @@ const Posts = require("../models/postModel");
 const popOptions = [
   {
     path: "createdBy",
-    select: "firstname lastname", 
+    select: "firstname lastname",
   },
   {
     path: "votes",
-    select: "createdBy"
+    select: "createdBy",
   },
   {
     path: "comments",
     populate: {
       path: "createdBy",
       select: "firstname lastname",
-    }
+    },
   },
 ];
+
 //controller for GET requests on /posts endpoint
 exports.getAllPosts = catchAsync(async (req, res, next) => {
-  let posts = await Posts.find({createdBy: req.user._id})
+  let posts = await Posts.find().populate(popOptions).sort({ timestamp: -1 });
+  res.status(200).json({
+    status: "success",
+    results: posts.length,
+    posts,
+  });
+});
+
+//controller for GET requests on /posts endpoint
+exports.getAllPostsOfAUser = catchAsync(async (req, res, next) => {
+  let posts = await Posts.find({ createdBy: req.user._id })
     .populate(popOptions)
     .sort({ timestamp: -1 });
   res.status(200).json({
     status: "success",
+    results: posts.length,
     posts,
   });
 });
@@ -44,7 +56,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
   }
 
   data.image = files;
-  let caption = data.caption.split(" ");
+  let caption = data.caption.toLowerCase().split(" ");
   let tagList = caption.filter((word) => word[0] === "#");
   console.log(tagList);
   let tags = [];
@@ -65,7 +77,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
 
 //controller for DELETE requests on /posts endpoint
 exports.deletePosts = catchAsync(async (req, res, next) => {
-  const posts = await Posts.remove({createdBy: req.user._id});
+  const posts = await Posts.remove({ createdBy: req.user._id });
 
   if (!posts) {
     return next(
@@ -81,8 +93,10 @@ exports.deletePosts = catchAsync(async (req, res, next) => {
 
 //controller for GET requests on /posts/:postId endpoint
 exports.getSinglePost = catchAsync(async (req, res, next) => {
-  var post = await Posts.findOne({ _id: req.params.postId, createdBy: req.user._id})
-  .populate(popOptions);
+  var post = await Posts.findOne({
+    _id: req.params.postId,
+    createdBy: req.user._id,
+  }).populate(popOptions);
 
   if (!post) {
     return next(
@@ -98,13 +112,15 @@ exports.getSinglePost = catchAsync(async (req, res, next) => {
 
 //controller for PATCH requests on /posts/:postId endpoint
 exports.updatePost = catchAsync(async (req, res, next) => {
-  if(req.body.image) {
-      return next(new AppError("files can't be updated", 403));
+  if (req.body.image) {
+    return next(new AppError("files can't be updated", 403));
   }
 
-  let modifiedPost = await Posts.findOneAndUpdate({
+  let modifiedPost = await Posts.findOneAndUpdate(
+    {
       _id: req.params.postId,
-      createdBy: req.user._id},
+      createdBy: req.user._id,
+    },
     {
       $set: data,
     },
@@ -130,7 +146,8 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 exports.deletePost = catchAsync(async (req, res, next) => {
   const post = await Posts.findByOneAndDelete({
     _id: req.params.postId,
-    createdBy: req.user._id});
+    createdBy: req.user._id,
+  });
 
   if (!post) {
     return next(
@@ -141,5 +158,19 @@ exports.deletePost = catchAsync(async (req, res, next) => {
   res.json({
     status: "success",
     post: null,
+  });
+});
+
+exports.getPostsByTag = catchAsync(async (req, res, next) => {
+  const query = req.query.search.toLowerCase();
+
+  const posts = await Posts.find({ tags: { $all: query } }).populate(
+    popOptions
+  );
+
+  res.status(200).json({
+    status: "success",
+    results: posts.length,
+    posts,
   });
 });
