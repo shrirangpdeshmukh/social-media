@@ -1,5 +1,5 @@
 const Vote = require("../models/voteModel");
-const Post = require("../models/PostModel");
+const Post = require("../models/postModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
