@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { Home, Layout, Login, Profile, Search } from "./components";
+import { Create, Home, Layout, Login, Profile, Search } from "./components";
 
 const getRoutes = (user, setUser, load, setLoad) => {
   if (user)
@@ -12,6 +12,7 @@ const getRoutes = (user, setUser, load, setLoad) => {
         children: [
           { path: "/home", element: <Home /> },
           { path: "/search", element: <Search /> },
+          { path: "/create", element: <Create /> },
           { path: "/profile", element: <Profile /> },
           { path: "/", element: <Navigate to="/home" replace /> },
           { path: "*", element: <Navigate to="/home" replace /> },
@@ -37,6 +38,10 @@ const getRoutes = (user, setUser, load, setLoad) => {
           },
           {
             path: "/profile",
+            element: <Login setUser={setUser} setLoad={setLoad} />,
+          },
+          {
+            path: "/create",
             element: <Login setUser={setUser} setLoad={setLoad} />,
           },
           {
