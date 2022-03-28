@@ -5,6 +5,8 @@ const path = require("path");
 const app = express();
 
 const authRoutes = require("./routes/authRoutes");
+const postRoutes = require("./routes/postRoutes");
+
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
@@ -23,6 +25,7 @@ app.get("/api/health", (req, res, next) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/posts", postRoutes);
 
 app.all("*", async (req, res, next) => {
   if (req.originalUrl.startsWith("/api")) {

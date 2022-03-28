@@ -7,6 +7,10 @@ const postSchema = new Schema(
       type: String,
       maxlength: 100,
     },
+    caption: {
+      type: String,
+      required: true
+    },
     image: {
       type: String,
       required: true,
