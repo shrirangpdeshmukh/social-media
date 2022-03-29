@@ -29,7 +29,7 @@ const DisplayPost = ({ post }) => {
             color: "black",
           }}
           component={Link}
-          to={"/user/" + post.createdBy._id}
+          to={"/user/" + post.createdBy?._id}
         >
           <Avatar src={post.createdBy?.img} alt={post.createdBy?.firstname} />
           <Stack direction="column">

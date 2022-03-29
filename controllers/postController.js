@@ -196,9 +196,12 @@ exports.deletePost = catchAsync(async (req, res, next) => {
 exports.getPostsByTag = catchAsync(async (req, res, next) => {
   const query = req.query.search.toLowerCase();
 
-  const posts = await Posts.find({ tags: { $all: query } }).populate(
-    popOptions
-  );
+  const hashtag = await Hashtag.findOne({ name: query }).populate({
+    path: "associatedPosts",
+    populate: popOptions,
+  });
+
+  const posts = hashtag.associatedPosts;
 
   res.status(200).json({
     status: "success",

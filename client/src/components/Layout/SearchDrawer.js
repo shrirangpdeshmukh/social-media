@@ -117,9 +117,11 @@ export default function SearchDrawer({ drawerOpen, drawerToggle }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
+                    textDecoration: "none",
+                    color: "black",
                   }}
                   component={Link}
-                  to={`/users/${account._id}`}
+                  to={`/user/${account._id}`}
                 >
                   <Avatar src={account?.img} alt={account?.firstname} />
                   <Stack direction="column" style={{ paddingLeft: "10px" }}>
@@ -140,9 +142,11 @@ export default function SearchDrawer({ drawerOpen, drawerToggle }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
+                    textDecoration: "none",
+                    color: "black",
                   }}
                   component={Link}
-                  to={`/tag/${hashtag.name}`}
+                  to={`post/tag/${hashtag.name}`}
                 >
                   <Avatar>#</Avatar>
                   <Stack direction="column" style={{ paddingLeft: "10px" }}>
