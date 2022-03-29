@@ -15,6 +15,8 @@ import {
 import { ChevronLeftRounded, ChevronRightRounded } from "@mui/icons-material";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 let images = [];
 
@@ -133,6 +135,19 @@ const Post = ({ user }) => {
     }
   }, [post]);
 
+  const handleDelete = () => {
+    axios
+      .delete(`/api/posts/${post._id}`)
+      .then(res => {
+        console.log(res);
+        navigate('/profile');
+      })
+      .catch(err => {
+        alert(err.response.data);
+        console.log(err);
+      })
+  }
+
   return (
     <div style={{ width: "100%" }}>
       {!post ? (
@@ -146,25 +161,39 @@ const Post = ({ user }) => {
               padding: "10px 20px",
             }}
           >
-            <Box
-              style={{
-                display: "flex",
-                alignItems: "center",
-                color: "black",
-                textDecoration: "none",
-              }}
-              component={Link}
-              to={
-                user?._id === post.createdBy._id
-                  ? "/profile"
-                  : "/user/" + post.createdBy._id
-              }
-            >
-              <Avatar src={post.createdBy.img} alt={post.createdBy.firstname} />
-              <Typography style={{ paddingLeft: "10px", fontWeight: 600 }}>
-                {post.createdBy.firstname}
-              </Typography>
-            </Box>
+            <Grid container>
+              <Grid item xs={11}>
+                <Box
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  color: "black",
+                  textDecoration: "none",
+                }}
+                component={Link}
+                to={
+                  user?._id === post.createdBy._id
+                    ? "/profile"
+                    : "/user/" + post.createdBy._id
+                }
+              >
+                <Avatar src={post.createdBy.img} alt={post.createdBy.firstname} />
+                <Typography style={{ paddingLeft: "10px", fontWeight: 600 }}>
+                  {post.createdBy.firstname}
+                </Typography>
+              </Box>
+              </Grid>
+              <Grid  item xs={1}
+                direction="column"
+                alignItems="flex-end"
+              >
+                {user && post && post.createdBy._id === user._id &&
+                  <IconButton onClick={handleDelete}>
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              </Grid>
+            </Grid>
           </Box>
           <Divider />
           <Grid container 
