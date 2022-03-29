@@ -25,6 +25,8 @@ const Home = () => {
   };
 
   useEffect(() => {
+    document.title = "Home";
+
     getPosts();
   }, []);
 

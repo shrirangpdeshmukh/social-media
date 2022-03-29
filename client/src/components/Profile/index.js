@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import {
   Avatar,
   Box,
@@ -30,31 +30,69 @@ const style = {
 const Profile = ({ user }) => {
   const navigate = useNavigate();
 
-  // user.bio = "This is profile of a software developer";
+  const { pathname } = useLocation();
+
   const theme = useTheme();
-  const [isLoading, setLoading] = useState(true);
-  const [posts, setPosts] = useState([]);
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState();
   const [isModalOpen, setModalStatus] = useState(false);
-  const [bio, setBio] = useState(user.bio ? user.bio : "No bio added yet");
-  const [data, setData] = useState(bio);
+  const [bio, setBio] = useState(null);
+  const [data, setData] = useState(null);
+
+  const checkUser = () => {
+    const path = window.location.pathname;
+
+    if (path.startsWith("/user/")) {
+      const id = path.split("/")[2];
+      if (id === user?._id) {
+        navigate("/profile");
+
+        return;
+      }
+
+      axios.get(`/api/user/${id}`).then((res) => {
+        setUserData(res.data.user);
+        setLoading(false);
+      });
+    } else setUserData(user);
+  };
 
   useEffect(() => {
-    //need to change api endpoints & token
-    axios
-      .get("/api/posts/")
-      .then((res) => {
-        setLoading(false);
-        setPosts(res.data.posts);
-      })
-      .catch((err) => {
-        setLoading(false);
-        if (err.response) console.log(err.response.data);
-        else console.log(err.message);
-      });
+    document.title = "User";
   }, []);
 
+  useEffect(() => {
+    checkUser();
+  }, [pathname]);
+
+  useEffect(() => {
+    if (userData) {
+      document.title = `${userData.firstname} ${userData.lastname}`;
+
+      if (userData.bio) {
+        setBio(userData.bio);
+        setData(userData.bio);
+      } else {
+        setBio("");
+        setData("");
+      }
+
+      axios
+        .get(`/api/posts/user/${userData._id}`)
+        .then((res) => {
+          setLoading(false);
+          setPosts(res.data.posts);
+        })
+        .catch((err) => {
+          setLoading(false);
+          if (err.response) console.log(err.response.data);
+          else console.log(err.message);
+        });
+    }
+  }, [userData]);
+
   const updateBio = () => {
-    //need to change api endpoints & token
     axios
       .patch("/api/user/profile", { bio: data })
       .then((res) => {
@@ -86,18 +124,18 @@ const Profile = ({ user }) => {
         >
           <Avatar
             alt="profile"
-            src={user.img}
+            src={userData?.img}
             sx={{ width: 120, height: 120 }}
           />
         </Grid>
 
         <Grid item xs={8} style={{ margin: "10px auto" }}>
           <Typography variant="h4">
-            {user.firstname} {user.lastname}
+            {userData?.firstname} {userData?.lastname}
           </Typography>
           <Box style={{ position: "relative" }}>
             <Typography fontSize="17px" color="#333" padding="10px 40px">
-              {bio}
+              {bio !== null ? (bio.length ? bio : "No bio added yet") : null}
             </Typography>
             <IconButton
               style={{ position: "absolute", top: 0, right: 0 }}
@@ -126,8 +164,8 @@ const Profile = ({ user }) => {
         </Grid>
 
         <Grid item xs={12} mt={3} container>
-          {!isLoading &&
-            posts.map((post, index) => {
+          {!loading &&
+            posts?.map((post, index) => {
               return (
                 <Box
                   key={"post-" + index}
@@ -154,12 +192,12 @@ const Profile = ({ user }) => {
                 </Box>
               );
             })}
-          {isLoading && (
+          {loading && (
             <Grid item xs={12}>
               <CircularProgress />
             </Grid>
           )}
-          {!isLoading && posts.length === 0 && (
+          {!loading && posts?.length === 0 && (
             <Grid item xs={12}>
               <Typography variant="h6" sx={{ fontWeight: "200" }}>
                 {"You do not have any posts yet !!!"}

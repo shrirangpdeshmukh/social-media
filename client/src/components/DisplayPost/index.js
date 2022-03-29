@@ -25,7 +25,11 @@ const DisplayPost = ({ post }) => {
             display: "flex",
             alignItems: "center",
             padding: "10px 20px",
+            textDecoration: "none",
+            color: "black",
           }}
+          component={Link}
+          to={"/user/" + post.createdBy._id}
         >
           <Avatar src={post.createdBy?.img} alt={post.createdBy?.firstname} />
           <Stack direction="column">
