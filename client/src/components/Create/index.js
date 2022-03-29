@@ -79,6 +79,8 @@ export default function Create({ user }) {
   };
 
   useEffect(() => {
+    document.title = "Create Post";
+
     previewPaneRef?.current?.addEventListener("wheel", (evt) => {
       evt.preventDefault();
       previewPaneRef.current.scrollLeft += evt.deltaY;

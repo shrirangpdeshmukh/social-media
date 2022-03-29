@@ -19,6 +19,7 @@ const getRoutes = (user, setUser, load, setLoad, drawerOpen, toggleDrawer) => {
         children: [
           { path: "/home", element: <Home /> },
           { path: "/create", element: <Create /> },
+          { path: "/user/:id", element: <Profile user={user} /> },
           { path: "/post/:id", element: <Post user={user} /> },
           { path: "/profile", element: <Profile user={user} /> },
           { path: "/", element: <Navigate to="/home" replace /> },
@@ -56,6 +57,7 @@ const getRoutes = (user, setUser, load, setLoad, drawerOpen, toggleDrawer) => {
           path: "/home",
           element: <Home />,
         },
+        { path: "/user/:id", element: <Profile user={user} /> },
         {
           path: "/post/:id",
           element: <Post />,

@@ -25,7 +25,7 @@ const popOptions = [
 
 //controller for GET requests on /posts/all endpoint
 exports.getAllPosts = catchAsync(async (req, res, next) => {
-  let posts = await Posts.find().populate(popOptions).sort({ timestamp: -1 });
+  let posts = await Posts.find().populate(popOptions).sort({ createdAt: -1 });
   res.status(200).json({
     status: "success",
     results: posts.length,
@@ -38,6 +38,20 @@ exports.getMyPosts = catchAsync(async (req, res, next) => {
   let posts = await Posts.find({ createdBy: req.user._id })
     .populate(popOptions)
     .sort({ createdAt: -1 });
+
+  res.status(200).json({
+    status: "success",
+    results: posts.length,
+    posts,
+  });
+});
+
+//controller for GET requests on /posts/user/:id endpoint
+exports.getUserPosts = catchAsync(async (req, res, next) => {
+  let posts = await Posts.find({ createdBy: req.params.id })
+    .populate(popOptions)
+    .sort({ createdAt: -1 });
+
   res.status(200).json({
     status: "success",
     results: posts.length,

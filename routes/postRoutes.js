@@ -7,6 +7,7 @@ const Router = express.Router();
 Router.get("/all", postController.getAllPosts);
 Router.get("/tags", postController.getPostsByTag);
 Router.get("/:postId", postController.getPost);
+Router.get("/user/:id", postController.getUserPosts);
 
 // Router.use(authController.verifyJwtToken, authController.loggedInUser);
 

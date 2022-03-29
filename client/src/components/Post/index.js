@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   Avatar,
@@ -72,6 +72,7 @@ const Post = ({ user }) => {
   };
 
   useEffect(() => {
+    document.title = "Post";
     const id = window.location.pathname.split("/")[2];
 
     axios
@@ -107,10 +108,25 @@ const Post = ({ user }) => {
               padding: "10px 20px",
             }}
           >
-            <Avatar src={post.createdBy.img} alt={post.createdBy.firstname} />
-            <Typography style={{ paddingLeft: "10px", fontWeight: 600 }}>
-              {post.createdBy.firstname}
-            </Typography>
+            <Box
+              style={{
+                display: "flex",
+                alignItems: "center",
+                color: "black",
+                textDecoration: "none",
+              }}
+              component={Link}
+              to={
+                user?._id === post.createdBy._id
+                  ? "/profile"
+                  : "/user/" + post.createdBy._id
+              }
+            >
+              <Avatar src={post.createdBy.img} alt={post.createdBy.firstname} />
+              <Typography style={{ paddingLeft: "10px", fontWeight: 600 }}>
+                {post.createdBy.firstname}
+              </Typography>
+            </Box>
           </Box>
           <Divider />
           <Grid container>
