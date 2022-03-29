@@ -11,7 +11,12 @@ Router.get("/user/:id", postController.getUserPosts);
 
 Router.use(authController.verifyJwtToken, authController.loggedInUser);
 
-Router.post("/", fileController.uploadFiles, postController.createPost);
+Router.post(
+  "/",
+  fileController.multerUpload,
+  fileController.resizeAndUploadFiles,
+  postController.createPost
+);
 Router.get("/", postController.getMyPosts);
 
 Router.patch("/:postId", postController.updatePost);
