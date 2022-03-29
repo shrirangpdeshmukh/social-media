@@ -11,10 +11,12 @@ import {
   Grid,
   IconButton,
   Typography,
+  Stack,
 } from "@mui/material";
 import { ChevronLeftRounded, ChevronRightRounded } from "@mui/icons-material";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import moment from "moment";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 let images = [];
 
@@ -50,33 +52,32 @@ const Post = ({ user }) => {
   const [likes, setLikes] = useState(0);
 
   const handleClick = () => {
-    if(!myLikeStatus) {
+    if (!myLikeStatus) {
       axios
         .post(`/api/vote/${post._id}`)
-        .then(res => {
+        .then((res) => {
           console.log(res);
           setLikeStatus(true);
-          setLikes(prev => prev+1);
+          setLikes((prev) => prev + 1);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           alert("some error occurred!!!");
-        })
-    }
-    else {
+        });
+    } else {
       axios
         .delete(`/api/vote/${post._id}`)
-        .then(res => {
+        .then((res) => {
           console.log(res);
           setLikeStatus(false);
-          setLikes(prev => prev-1);
+          setLikes((prev) => prev - 1);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           alert("some error occurred!!!");
-        })
+        });
     }
-  }
+  };
 
   const postComment = () => {
     axios
@@ -116,18 +117,18 @@ const Post = ({ user }) => {
 
         navigate("/home");
       });
-  }
+  };
 
   useEffect(() => {
     document.title = "Post";
-    getPost()
+    getPost();
   }, []);
 
   useEffect(() => {
     if (post) {
-      let find =  post.votes.find(vote => vote.createdBy === user._id);
+      let find = post.votes.find((vote) => vote.createdBy === user._id);
       console.log(find);
-      if(find) setLikeStatus(true);
+      if (find) setLikeStatus(true);
       setLikes(post.votes.length);
       loadImages();
     }
@@ -165,10 +166,12 @@ const Post = ({ user }) => {
                 {post.createdBy.firstname}
               </Typography>
             </Box>
+            <Typography style={{ paddingLeft: "10px", fontWeight: 300 }}>
+              {moment(post.createdAt).fromNow()}
+            </Typography>
           </Box>
           <Divider />
-          <Grid container 
-            onDoubleClick={handleClick}>
+          <Grid container onDoubleClick={handleClick}>
             <Grid item xs={12} md={6}>
               <Box
                 style={{
@@ -177,7 +180,6 @@ const Post = ({ user }) => {
                   alignItems: "center",
                   position: "relative",
                 }}
-                
               >
                 <Box
                   style={{
@@ -247,13 +249,12 @@ const Post = ({ user }) => {
               <Box borderTop="1px solid #ccc">
                 <Grid container>
                   <Grid item ml={1}>
-                    <IconButton>
-                      {!myLikeStatus && <FavoriteBorderIcon/>}
-                      {myLikeStatus && <FavoriteIcon color="error"/>}
-                    </IconButton>
-                    {" "}
+                    <IconButton onClick={handleClick}>
+                      {!myLikeStatus && <FavoriteBorderIcon />}
+                      {myLikeStatus && <FavoriteIcon color="error" />}
+                    </IconButton>{" "}
                     {likes} likes
-                </Grid>
+                  </Grid>
                 </Grid>
               </Box>
             </Grid>
@@ -283,27 +284,45 @@ const Post = ({ user }) => {
                 <Divider style={{ margin: "10px 0px" }} />
                 <Box style={{ maxHeight: "70vw", overflow: "auto" }}>
                   {post.comments.length ? (
-                    post.comments.map((comment, index) => (
-                      <Box
-                        style={{ display: "flex", height: "40px" }}
-                        key={"comment-" + index}
-                      >
-                        <Box style={{ padding: "0px 5px" }}>
-                          <Avatar
-                            src={comment.createdBy.img}
-                            style={{ width: "25px", height: "25px" }}
-                          />
+                    post.comments.map((comment, index) => {
+                      return (
+                        <Box
+                          style={{
+                            display: "flex",
+                            height: "40px",
+                            position: "relative",
+                          }}
+                          key={"comment-" + index}
+                        >
+                          <Box style={{ padding: "0px 5px" }}>
+                            <Avatar
+                              src={comment.createdBy.img}
+                              style={{ width: "25px", height: "25px" }}
+                            />
+                          </Box>
+                          <Box>
+                            <Typography
+                              style={{ fontSize: "17px", textAlign: "left" }}
+                            >
+                              <b>{comment.createdBy.firstname}</b>&nbsp;
+                              {comment.body}
+                            </Typography>
+                          </Box>
+
+                          <Box>
+                            <Typography
+                              style={{
+                                fontSize: "12px",
+                                position: "absolute",
+                                right: "0",
+                              }}
+                            >
+                              {moment(comment.createdAt).fromNow(true)}
+                            </Typography>
+                          </Box>
                         </Box>
-                        <Box>
-                          <Typography
-                            style={{ fontSize: "17px", textAlign: "left" }}
-                          >
-                            <b>{comment.createdBy.firstname}</b>&nbsp;
-                            {comment.body}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    ))
+                      );
+                    })
                   ) : (
                     <Typography>No comments on this post yet</Typography>
                   )}

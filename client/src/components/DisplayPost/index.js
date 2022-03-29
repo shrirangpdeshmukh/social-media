@@ -8,6 +8,7 @@ import {
   Stack,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 const styles = {
   boxShadow: "0px 0px 15px 5px rgb(160,160,160,0.3)",
@@ -37,7 +38,7 @@ const DisplayPost = ({ post }) => {
               {post.createdBy?.firstname}
             </Typography>
             <Typography style={{ paddingLeft: "10px", fontWeight: 600 }}>
-              {new Date(post.createdAt).toLocaleString()}
+              {moment(post?.createdAt).fromNow()}
             </Typography>
           </Stack>
         </Box>
