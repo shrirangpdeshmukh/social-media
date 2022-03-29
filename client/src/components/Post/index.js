@@ -13,6 +13,8 @@ import {
   Typography,
 } from "@mui/material";
 import { ChevronLeftRounded, ChevronRightRounded } from "@mui/icons-material";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 let images = [];
 
@@ -42,18 +44,45 @@ const Post = ({ user }) => {
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [index, setIndex] = useState(0);
-
   const [posting, setPosting] = useState(false);
   const [comment, setComment] = useState("");
+  const [myLikeStatus, setLikeStatus] = useState(false);
+  const [likes, setLikes] = useState(0);
+
+  const handleClick = () => {
+    if(!myLikeStatus) {
+      axios
+        .post(`/api/vote/${post._id}`)
+        .then(res => {
+          console.log(res);
+          setLikeStatus(true);
+          setLikes(prev => prev+1);
+        })
+        .catch(err => {
+          console.log(err);
+          alert("some error occurred!!!");
+        })
+    }
+    else {
+      axios
+        .delete(`/api/vote/${post._id}`)
+        .then(res => {
+          console.log(res);
+          setLikeStatus(false);
+          setLikes(prev => prev-1);
+        })
+        .catch(err => {
+          console.log(err);
+          alert("some error occurred!!!");
+        })
+    }
+  }
 
   const postComment = () => {
-    setPosting(true);
-
     axios
       .post(`/api/comment/${post._id}`, { comment })
       .then(() => {
-        setPosting(false);
-        setComment("");
+        getPost();
       })
       .catch((err) => {
         setPosting(false);
@@ -71,26 +100,35 @@ const Post = ({ user }) => {
     }
   };
 
-  useEffect(() => {
-    document.title = "Post";
+  const getPost = () => {
     const id = window.location.pathname.split("/")[2];
-
+    setPosting(true);
     axios
       .get(`/api/posts/${id}`)
       .then((res) => {
         console.log({ post: res.data.post });
-
         setPost(res.data.post);
+        setPosting(false);
+        setComment("");
       })
       .catch((err) => {
         console.log(err);
 
         navigate("/home");
       });
+  }
+
+  useEffect(() => {
+    document.title = "Post";
+    getPost()
   }, []);
 
   useEffect(() => {
     if (post) {
+      let find =  post.votes.find(vote => vote.createdBy === user._id);
+      console.log(find);
+      if(find) setLikeStatus(true);
+      setLikes(post.votes.length);
       loadImages();
     }
   }, [post]);
@@ -129,7 +167,8 @@ const Post = ({ user }) => {
             </Box>
           </Box>
           <Divider />
-          <Grid container>
+          <Grid container 
+            onDoubleClick={handleClick}>
             <Grid item xs={12} md={6}>
               <Box
                 style={{
@@ -138,6 +177,7 @@ const Post = ({ user }) => {
                   alignItems: "center",
                   position: "relative",
                 }}
+                
               >
                 <Box
                   style={{
@@ -203,6 +243,18 @@ const Post = ({ user }) => {
                     </Box>
                   )}
                 </Box>
+              </Box>
+              <Box borderTop="1px solid #ccc">
+                <Grid container>
+                  <Grid item ml={1}>
+                    <IconButton>
+                      {!myLikeStatus && <FavoriteBorderIcon/>}
+                      {myLikeStatus && <FavoriteIcon color="error"/>}
+                    </IconButton>
+                    {" "}
+                    {likes} likes
+                </Grid>
+                </Grid>
               </Box>
             </Grid>
             <Grid item xs={12} md={6}>
