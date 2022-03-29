@@ -130,6 +130,10 @@ const LoginButton = ({ setUser, load, setLoad }) => {
 };
 
 const Login = ({ setUser, load, setLoad }) => {
+  useEffect(() => {
+    if (!load) document.title = "Login";
+  }, [load]);
+
   return (
     <div
       style={{

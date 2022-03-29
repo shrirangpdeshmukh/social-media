@@ -1,80 +1,3 @@
-// import { useEffect, useState } from "react";
-// import axios from "axios";
-// import { Grid, Typography } from "@mui/material";
-// import DisplayPost from "../DisplayPost";
-// import DisplayUser from "../DisplayUser";
-// import DemoDrawer from "../DemoDrawer/DummyDrawer";
-
-// const Search = () => {
-//   const [query, setQuery] = useState("");
-//   const [results, setResults] = useState({ posts: [], users: [] });
-
-//   const search = () => {
-//     if (query) {
-//       axios
-//         .get(`/api/search?search=${query}`)
-//         .then((res) => {
-//           console.log(res);
-//           setResults(res.data);
-//         })
-//         .catch((err) => console.log(err));
-//     }
-//   };
-
-//   useEffect(() => {
-//     search();
-//   }, [query]);
-
-//   const handleChange = (e) => {
-//     e.preventDefault();
-//     setQuery((query) => e.target.value);
-//   };
-
-//   return (
-//     <>
-//       <div>SEARCH</div>
-//       {/* <input
-//         type="text"
-//         value={query}
-//         placeholder="search"
-//         onChange={handleChange}
-//       /> */}
-//       <DemoDrawer />
-//       {/* <Grid container spacing={2}>
-//         <Grid container item xs={12}>
-//           {results.users.length > 0 && (
-//             <Typography variant="h6" sx={{ fontWeight: "200" }}>
-//               {"Matching users"}
-//             </Typography>
-//           )}
-//           {results.users.map((user) => {
-//             return <DisplayUser account={user} key={user._id} />;
-//           })}
-//         </Grid>
-//         <Grid container item xs={12}>
-//           {results.posts.length > 0 && (
-//             <Typography variant="h6" sx={{ fontWeight: "200" }}>
-//               {"Mtching posts"}
-//             </Typography>
-//           )}
-//           {results.posts.map((post, index) => {
-//             return <DisplayPost post={post} key={"post-" + index} />;
-//           })}
-//         </Grid>{" "}
-//         {query && results.posts.length === 0 && results.users.length === 0 && (
-//           <Grid item xs={12}>
-//             <Typography variant="h6" sx={{ fontWeight: "200" }}>
-//               {"No matching users or hastags found for your query!!!"}
-//             </Typography>
-//           </Grid>
-//         )}
-//       </Grid> */}
-//     </>
-//   );
-// };
-
-// export default Search;
-
 import { useState, useEffect } from "react";
 import {
   Grid,
@@ -92,25 +15,40 @@ import {
   InputLabel,
   OutlinedInput,
   InputAdornment,
+  IconButton,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/CloseRounded";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import DisplayPost from "../DisplayPost";
 
 export default function SearchDrawer({ drawerOpen, drawerToggle }) {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState({ posts: [], users: [] });
+  const [results, setResults] = useState({ hashtags: [], users: [] });
 
   const search = () => {
+    if (!query) {
+      setResults({ hashtags: [], users: [] });
+    }
     if (query) {
-      axios
-        .get(`/api/search?search=${query}`)
-        .then((res) => {
-          console.log(res);
-          setResults(res.data);
-        })
-        .catch((err) => console.log(err));
+      let searchQuery = query;
+      let isTag = false;
+
+      if (query.includes("#") && query[0] === "#") {
+        searchQuery = query.substring(1);
+        isTag = true;
+      }
+
+      if (searchQuery) {
+        axios
+          .get(`/api/search?query=${searchQuery}&tag=${isTag}`)
+          .then((res) => {
+            console.log(res);
+            setResults(res.data.results);
+          })
+          .catch((err) => console.log(err));
+      }
     }
   };
 
@@ -153,7 +91,17 @@ export default function SearchDrawer({ drawerOpen, drawerToggle }) {
           onChange={handleChange}
           endAdornment={
             <InputAdornment position="end">
-              <SearchIcon />
+              {query ? (
+                <IconButton
+                  onClick={() => {
+                    setQuery("");
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              ) : (
+                <SearchIcon />
+              )}
             </InputAdornment>
           }
           label="Search"
@@ -170,6 +118,8 @@ export default function SearchDrawer({ drawerOpen, drawerToggle }) {
                     display: "flex",
                     alignItems: "center",
                   }}
+                  component={Link}
+                  to={`/users/${account._id}`}
                 >
                   <Avatar src={account?.img} alt={account?.firstname} />
                   <Stack direction="column" style={{ paddingLeft: "10px" }}>
@@ -183,8 +133,29 @@ export default function SearchDrawer({ drawerOpen, drawerToggle }) {
           })}
 
         {query &&
-          results.posts.map((post) => {
-            return <DisplayPost post={post} />;
+          results.hashtags.map((hashtag) => {
+            return (
+              <ListItem key={hashtag._id} style={styles}>
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                  component={Link}
+                  to={`/tag/${hashtag.name}`}
+                >
+                  <Avatar>#</Avatar>
+                  <Stack direction="column" style={{ paddingLeft: "10px" }}>
+                    <Typography style={{ fontWeight: 600 }}>
+                      {hashtag?.name}
+                    </Typography>
+                    <Typography style={{ fontWeight: 600, color: "blue" }}>
+                      {hashtag?.associatedPosts?.length} posts
+                    </Typography>
+                  </Stack>
+                </Box>
+              </ListItem>
+            );
           })}
       </List>
     </Box>
