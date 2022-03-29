@@ -17,7 +17,7 @@ const popOptions = [
     path: "comments",
     populate: {
       path: "createdBy",
-      select: "firstname lastname",
+      select: "firstname lastname img",
     },
   },
 ];

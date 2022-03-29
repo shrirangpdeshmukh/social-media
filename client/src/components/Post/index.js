@@ -4,6 +4,7 @@ import axios from "axios";
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CircularProgress,
   Divider,
@@ -41,6 +42,24 @@ const Post = ({ user }) => {
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [index, setIndex] = useState(0);
+
+  const [posting, setPosting] = useState(false);
+  const [comment, setComment] = useState("");
+
+  const postComment = () => {
+    setPosting(true);
+
+    axios
+      .post(`/api/comment/${post._id}`, { comment })
+      .then(() => {
+        setPosting(false);
+        setComment("");
+      })
+      .catch((err) => {
+        setPosting(false);
+        console.log(err);
+      });
+  };
 
   const loadImages = () => {
     for (let i = 0; i < post.image.length; i++) {
@@ -174,6 +193,9 @@ const Post = ({ user }) => {
               <Box
                 style={{
                   padding: "10px",
+                  position: "relative",
+                  height: "100%",
+                  boxSizing: "border-box",
                 }}
               >
                 <Box style={{ display: "flex" }}>
@@ -184,15 +206,18 @@ const Post = ({ user }) => {
                     />
                   </Box>
                   <Box>
-                    <Typography style={{ fontSize: "18px", textAlign: "left" }}>
+                    <Typography style={{ fontSize: "17px", textAlign: "left" }}>
                       <b>{post.createdBy.firstname}</b>&nbsp;{post.caption}
                     </Typography>
                   </Box>
                 </Box>
                 <Divider style={{ margin: "10px 0px" }} />
                 {post.comments.length ? (
-                  post.comments.map((comment) => (
-                    <Box style={{ display: "flex" }}>
+                  post.comments.map((comment, index) => (
+                    <Box
+                      style={{ display: "flex", height: "40px" }}
+                      key={"comment-" + index}
+                    >
                       <Box style={{ padding: "0px 5px" }}>
                         <Avatar
                           src={comment.createdBy.img}
@@ -201,7 +226,7 @@ const Post = ({ user }) => {
                       </Box>
                       <Box>
                         <Typography
-                          style={{ fontSize: "18px", textAlign: "left" }}
+                          style={{ fontSize: "17px", textAlign: "left" }}
                         >
                           <b>{comment.createdBy.firstname}</b>&nbsp;
                           {comment.body}
@@ -211,6 +236,63 @@ const Post = ({ user }) => {
                   ))
                 ) : (
                   <Typography>No comments on this post yet</Typography>
+                )}
+                {user && (
+                  <Box
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: 10,
+                      right: 10,
+                      borderTop: "1px solid rgb(200,200,200,0.5)",
+                      display: "flex",
+                    }}
+                  >
+                    <textarea
+                      id="comment-box"
+                      type="text"
+                      readOnly={posting}
+                      placeholder="Add a comment..."
+                      style={{
+                        width: "100%",
+                        border: 0,
+                        padding: "10px",
+                        boxSizing: "border-box",
+                        outline: "none",
+                        resize: "none",
+                        height: "40px",
+                        fontSize: "15px",
+                      }}
+                      value={comment}
+                      onChange={(event) => {
+                        setComment(event.target.value);
+                      }}
+                    />
+                    {posting ? (
+                      <Box
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <CircularProgress
+                          style={{ width: "28px", height: "28px" }}
+                        />
+                      </Box>
+                    ) : (
+                      <Button
+                        style={{
+                          display: comment.trim().length ? "block" : "none",
+                        }}
+                        onClick={() => {
+                          postComment();
+                        }}
+                      >
+                        POST
+                      </Button>
+                    )}
+                  </Box>
                 )}
               </Box>
             </Grid>

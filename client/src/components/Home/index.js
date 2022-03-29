@@ -1,16 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import {
-  Grid,
-  CircularProgress,
-  Box,
-  Typography,
-  Card,
-  Avatar,
-  Divider,
-  Stack,
-} from "@mui/material";
+import { CircularProgress, Box, Typography } from "@mui/material";
+import { Masonry } from "@mui/lab";
+
 import DisplayPost from "../DisplayPost";
 
 const Home = () => {
@@ -37,24 +29,27 @@ const Home = () => {
   }, []);
 
   return (
-    <Grid container>
-      {!isLoading &&
-        posts.map((post, index) => {
-          return <DisplayPost post={post} key={"post-" + index} />;
-        })}
+    <Box style={{ width: "100%" }}>
+      {!isLoading && (
+        <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={2}>
+          {posts.map((post, index) => {
+            return <DisplayPost post={post} key={"post-" + index} />;
+          })}
+        </Masonry>
+      )}
       {isLoading && (
-        <Grid item xs={12}>
+        <Box>
           <CircularProgress />
-        </Grid>
+        </Box>
       )}
       {!isLoading && posts.length === 0 && (
-        <Grid item xs={12}>
+        <Box>
           <Typography variant="h6" sx={{ fontWeight: "200" }}>
             {"You do not have any posts yet !!!"}
           </Typography>
-        </Grid>
+        </Box>
       )}
-    </Grid>
+    </Box>
   );
 };
 

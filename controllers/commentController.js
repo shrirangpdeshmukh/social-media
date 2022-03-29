@@ -4,12 +4,12 @@ const AppError = require("../utils/appError");
 
 exports.postComment = catchAsync(async (req, res, next) => {
   const user = req.user._id;
-  const { post, body } = req.body;
+  const { comment } = req.body;
 
   const newComment = await Comment.create({
     createdBy: user,
-    parentId: post,
-    body: body,
+    parentId: req.params.id,
+    body: comment,
   });
 
   res.status(201).json({
