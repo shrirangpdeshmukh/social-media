@@ -52,6 +52,7 @@ const Post = ({ user }) => {
   const [comment, setComment] = useState("");
   const [myLikeStatus, setLikeStatus] = useState(false);
   const [likes, setLikes] = useState(0);
+  const [caption, setCaption] = useState("");
 
   const handleClick = () => {
     if (!myLikeStatus) {
@@ -136,7 +137,6 @@ const Post = ({ user }) => {
       console.log(find);
       if (find) setLikeStatus(true);
       setLikes(post.votes.length);
-      loadImages();
     }
   }, [post]);
 
@@ -194,7 +194,13 @@ const Post = ({ user }) => {
                   </Typography>
                 </Box>
               </Grid>
-              <Grid item xs={1} direction="column" alignItems="flex-end">
+              <Grid
+                item
+                xs={1}
+                container
+                direction="column"
+                alignItems="flex-end"
+              >
                 {user && post && post.createdBy._id === user._id && (
                   <IconButton onClick={handleDelete}>
                     <DeleteIcon />
@@ -313,7 +319,18 @@ const Post = ({ user }) => {
                       <b>{post.createdBy.firstname}</b>
                     </Typography>
                     <Typography style={{ fontSize: "17px", textAlign: "left" }}>
-                      {post.caption}
+                      {post.caption.split(" ").map((cap, index) => {
+                        if (cap[0] === "#")
+                          return (
+                            <a
+                              key={index + 1}
+                              href={`/post/tag/${cap.substring(1)}`}
+                            >
+                              {cap}{" "}
+                            </a>
+                          );
+                        else return cap + " ";
+                      })}
                     </Typography>
                   </Box>
                 </Box>

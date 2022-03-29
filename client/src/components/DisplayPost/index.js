@@ -1,11 +1,13 @@
+import { useState } from "react";
 import {
-  Grid,
-  Box,
-  Typography,
-  Card,
   Avatar,
+  Box,
+  Card,
   Divider,
+  Grid,
+  Skeleton,
   Stack,
+  Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import moment from "moment";
@@ -18,6 +20,8 @@ const styles = {
 };
 
 const DisplayPost = ({ post }) => {
+  const [loaded, setLoaded] = useState(false);
+
   return (
     <Grid item xs={12} sm={6} md={4}>
       <Card style={styles} sx={{ height: "100%", ...styles }}>
@@ -58,8 +62,11 @@ const DisplayPost = ({ post }) => {
             style={{
               width: "100%",
               objectFit: "contain",
+              display: loaded ? "block" : "none",
             }}
+            onLoad={() => setLoaded(true)}
           />
+          {!loaded && <Skeleton variant="rectangular" height={100} />}
         </Box>
       </Card>
     </Grid>
