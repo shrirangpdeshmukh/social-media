@@ -176,10 +176,7 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 
 //controller for DELETE requests on /posts/:postId endpoint
 exports.deletePost = catchAsync(async (req, res, next) => {
-  const post = await Posts.findByOneAndDelete({
-    _id: req.params.postId,
-    createdBy: req.user._id,
-  });
+  const post = await Posts.findByIdAndDelete(req.params.postId);
 
   if (!post) {
     return next(
