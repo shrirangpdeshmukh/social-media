@@ -1,25 +1,23 @@
 import { Navigate } from "react-router-dom";
-import {
-  Create,
-  Home,
-  Layout,
-  Login,
-  Post,
-  Profile,
-  Search,
-} from "./components";
+import { Create, Home, Layout, Login, Post, Profile } from "./components";
 
-const getRoutes = (user, setUser, load, setLoad) => {
+const getRoutes = (user, setUser, load, setLoad, drawerOpen, toggleDrawer) => {
   if (user)
     return [
       {
         path: "/",
         element: (
-          <Layout load={load} setLoad={setLoad} setUser={setUser} user={user} />
+          <Layout
+            load={load}
+            setLoad={setLoad}
+            setUser={setUser}
+            user={user}
+            drawerOpen={drawerOpen}
+            toggleDrawer={toggleDrawer}
+          />
         ),
         children: [
           { path: "/home", element: <Home /> },
-          { path: "/search", element: <Search /> },
           { path: "/create", element: <Create /> },
           { path: "/post/:id", element: <Post user={user} /> },
           { path: "/profile", element: <Profile user={user} /> },
@@ -57,10 +55,6 @@ const getRoutes = (user, setUser, load, setLoad) => {
         {
           path: "/home",
           element: <Home />,
-        },
-        {
-          path: "/search",
-          element: <Search />,
         },
         {
           path: "/post/:id",

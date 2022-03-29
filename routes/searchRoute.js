@@ -20,7 +20,10 @@ Router.get(
         user.firstname.toLowerCase().includes(query) ||
         user.lastname.toLowerCase().includes(query)
     );
-    const resultPosts = await Post.find({ tags: { $all: query } });
+    const resultPosts = await Post.find({ tags: { $all: query } }).populate({
+      path: "createdBy",
+      select: "firstname lastname img",
+    });
 
     res.status(200).json({
       posts: resultPosts,

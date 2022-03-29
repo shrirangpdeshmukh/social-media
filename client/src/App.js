@@ -22,6 +22,7 @@ const theme = createTheme({
 function App() {
   const [load, setLoad] = useState(true);
   const [user, setUser] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const updateUser = (data) => {
     setUser(data);
@@ -31,7 +32,13 @@ function App() {
     setLoad(status);
   };
 
-  const routing = useRoutes(getRoutes(user, updateUser, load, updateLoad));
+  const toggleDrawer = (open) => {
+    setDrawerOpen(open);
+  };
+
+  const routing = useRoutes(
+    getRoutes(user, updateUser, load, updateLoad, drawerOpen, toggleDrawer)
+  );
 
   useEffect(() => {
     console.log({ user });

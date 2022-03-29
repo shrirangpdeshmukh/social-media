@@ -46,7 +46,7 @@ const LogoutButton = ({ setLoad }) => {
   );
 };
 
-const NavBar = ({ user, setUser, setLoad }) => {
+const NavBar = ({ user, setUser, setLoad, toggleDrawer }) => {
   const navigate = useNavigate();
 
   const navlink = window.location.pathname.split("/")[1];
@@ -91,7 +91,8 @@ const NavBar = ({ user, setUser, setLoad }) => {
             key={item.path}
             style={{ margin: "5px" }}
             onClick={() => {
-              navigate(`/${item.path}`);
+              if (item.path === "search") toggleDrawer(true);
+              else navigate(`/${item.path}`);
             }}
           >
             {item.path === "profile" && user ? (

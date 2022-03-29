@@ -1,11 +1,17 @@
 import { Outlet } from "react-router-dom";
 import { CircularProgress, Container } from "@mui/material";
 import NavBar from "./NavBar";
+import SearchDrawer from "./SearchDrawer";
 
-const Layout = ({ setLoad, load, user, setUser }) => {
+const Layout = ({ setLoad, load, user, setUser, drawerOpen, toggleDrawer }) => {
   return (
     <div style={{ display: "flex" }}>
-      <NavBar user={user} setUser={setUser} setLoad={setLoad} />
+      <NavBar
+        user={user}
+        setUser={setUser}
+        setLoad={setLoad}
+        toggleDrawer={toggleDrawer}
+      />
       <div
         style={{
           height: "100vh",
@@ -36,6 +42,7 @@ const Layout = ({ setLoad, load, user, setUser }) => {
             alignItems: "center",
           }}
         >
+          <SearchDrawer drawerOpen={drawerOpen} drawerToggle={toggleDrawer} />
           <Outlet />
         </Container>
       </div>
