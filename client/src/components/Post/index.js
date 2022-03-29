@@ -196,6 +196,7 @@ const Post = ({ user }) => {
                   position: "relative",
                   height: "100%",
                   boxSizing: "border-box",
+                  paddingBottom: user ? "50px" : "10px",
                 }}
               >
                 <Box style={{ display: "flex" }}>
@@ -212,31 +213,33 @@ const Post = ({ user }) => {
                   </Box>
                 </Box>
                 <Divider style={{ margin: "10px 0px" }} />
-                {post.comments.length ? (
-                  post.comments.map((comment, index) => (
-                    <Box
-                      style={{ display: "flex", height: "40px" }}
-                      key={"comment-" + index}
-                    >
-                      <Box style={{ padding: "0px 5px" }}>
-                        <Avatar
-                          src={comment.createdBy.img}
-                          style={{ width: "25px", height: "25px" }}
-                        />
+                <Box style={{ maxHeight: "70vw", overflow: "auto" }}>
+                  {post.comments.length ? (
+                    post.comments.map((comment, index) => (
+                      <Box
+                        style={{ display: "flex", height: "40px" }}
+                        key={"comment-" + index}
+                      >
+                        <Box style={{ padding: "0px 5px" }}>
+                          <Avatar
+                            src={comment.createdBy.img}
+                            style={{ width: "25px", height: "25px" }}
+                          />
+                        </Box>
+                        <Box>
+                          <Typography
+                            style={{ fontSize: "17px", textAlign: "left" }}
+                          >
+                            <b>{comment.createdBy.firstname}</b>&nbsp;
+                            {comment.body}
+                          </Typography>
+                        </Box>
                       </Box>
-                      <Box>
-                        <Typography
-                          style={{ fontSize: "17px", textAlign: "left" }}
-                        >
-                          <b>{comment.createdBy.firstname}</b>&nbsp;
-                          {comment.body}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  ))
-                ) : (
-                  <Typography>No comments on this post yet</Typography>
-                )}
+                    ))
+                  ) : (
+                    <Typography>No comments on this post yet</Typography>
+                  )}
+                </Box>
                 {user && (
                   <Box
                     style={{
