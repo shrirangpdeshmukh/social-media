@@ -310,7 +310,10 @@ const Post = ({ user }) => {
                   </Box>
                   <Box>
                     <Typography style={{ fontSize: "17px", textAlign: "left" }}>
-                      <b>{post.createdBy.firstname}</b>&nbsp;{post.caption}
+                      <b>{post.createdBy.firstname}</b>
+                    </Typography>
+                    <Typography style={{ fontSize: "17px", textAlign: "left" }}>
+                      {post.caption}
                     </Typography>
                   </Box>
                 </Box>
