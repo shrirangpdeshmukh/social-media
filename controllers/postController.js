@@ -64,7 +64,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
   const data = JSON.parse(JSON.stringify(req.body));
   let post = new Posts();
   const files = [];
-  console.log(req.files);
+
   if (req.files) {
     req.files.forEach((file) => {
       files.push(file.filename);

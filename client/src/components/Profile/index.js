@@ -229,14 +229,7 @@ const Profile = ({ user }) => {
                 onChange={(e) => setData(e.target.value)}
               />
             </Grid>
-            <Grid
-              item
-              xs={12}
-              mt={2}
-              container
-              direction="column"
-              alignItems="flex-end"
-            >
+            <Grid item xs={12} mt={2} container alignItems="flex-end">
               <Button variant="contained" onClick={updateBio}>
                 SAVE
               </Button>
