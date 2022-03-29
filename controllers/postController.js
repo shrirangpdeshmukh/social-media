@@ -3,6 +3,7 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
 const Posts = require("../models/postModel");
+const Hashtag = require("../models/hashtagModel");
 
 const popOptions = [
   {
@@ -47,6 +48,7 @@ exports.getMyPosts = catchAsync(async (req, res, next) => {
 //controller for POST requests on /posts endpoint
 exports.createPost = catchAsync(async (req, res, next) => {
   const data = JSON.parse(JSON.stringify(req.body));
+  let post = new Posts();
   const files = [];
   console.log(req.files);
   if (req.files) {
@@ -55,7 +57,6 @@ exports.createPost = catchAsync(async (req, res, next) => {
     });
   }
 
-  data.image = files;
   let caption = data.caption.toLowerCase().split(" ");
   let tagList = caption.filter((word) => word[0] === "#");
   console.log(tagList);
@@ -66,10 +67,27 @@ exports.createPost = catchAsync(async (req, res, next) => {
     console.log(t);
     tags = tags.concat(t);
   }
-  data.tags = tags;
-  data.createdBy = req.user._id;
 
-  let post = await Posts.create(data);
+  for (let tag of tags) {
+    const tagDocument = await Hashtag.findOne({ name: tag });
+
+    if (tagDocument) {
+      console.log("documment already exists");
+      tagDocument.associatedPosts.push(post._id);
+      await tagDocument.save();
+    } else {
+      console.log("document doesnot exist createc new one");
+      await Hashtag.create({ name: tag, associatedPosts: [post._id] });
+    }
+  }
+
+  post.caption = data.caption;
+  post.tags = tags;
+  post.image = files;
+  post.createdBy = req.user?._id;
+
+  await post.save();
+
   res.status(201).json({
     status: "success",
     post,

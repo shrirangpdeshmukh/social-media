@@ -3,31 +3,32 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const Post = require("../models/postModel");
 const User = require("../models/userModel");
+const Hashtag = require("../models/hashtagModel");
 
 const Router = express.Router();
 
 Router.get(
   "/",
   catchAsync(async (req, res, next) => {
-    const query = req.query.search.toLowerCase();
+    const query = req.query.query?.toLowerCase();
+    const isTag = req.query.tag === "true";
+    console.log({ isTag: isTag, query: query });
+    const results = { hashtags: [], users: [] };
 
-    console.log({ query });
-
-    const allUsers = await User.find();
-
-    const resultUsers = allUsers.filter(
-      (user) =>
-        user.firstname.toLowerCase().includes(query) ||
-        user.lastname.toLowerCase().includes(query)
+    const allHashtags = await Hashtag.find();
+    results.hashtags = allHashtags.filter((hashtag) =>
+      hashtag.name.includes(query)
     );
-    const resultPosts = await Post.find({ tags: { $all: query } }).populate({
-      path: "createdBy",
-      select: "firstname lastname img",
-    });
-
+    if (!isTag) {
+      const allUsers = await User.find();
+      results.users = allUsers.filter(
+        (user) =>
+          user.firstname.toLowerCase().includes(query) ||
+          user.lastname.toLowerCase().includes(query)
+      );
+    }
     res.status(200).json({
-      posts: resultPosts,
-      users: resultUsers,
+      results,
     });
   })
 );
