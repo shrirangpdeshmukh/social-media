@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { Create, Home, Layout, Login, Post, Profile } from "./components";
+import Home2 from "./components/Home/index copy";
 
 const getRoutes = (user, setUser, load, setLoad, drawerOpen, toggleDrawer) => {
   if (user)
@@ -20,6 +21,7 @@ const getRoutes = (user, setUser, load, setLoad, drawerOpen, toggleDrawer) => {
           { path: "/home", element: <Home /> },
           { path: "/create", element: <Create /> },
           { path: "/user/:id", element: <Profile user={user} /> },
+          { path: "/post/tag/:id", element: <Home2 user={user} /> },
           { path: "/post/:id", element: <Post user={user} /> },
           { path: "/profile", element: <Profile user={user} /> },
           { path: "/", element: <Navigate to="/home" replace /> },
