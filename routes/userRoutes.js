@@ -6,7 +6,7 @@ const Router = express.Router();
 
 Router.use(authController.verifyJwtToken, authController.loggedInUser);
 
-Router.get(userController.getUser);
-Router.patch("/bio", userController.addBio);
+Router.get("/", userController.getUser);
+Router.patch("/profile", userController.addBio);
 
 module.exports = Router;

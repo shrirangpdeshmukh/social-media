@@ -18,10 +18,11 @@ exports.addBio = catchAsync(async (req, res, next) => {
   const user = req.user._id;
   const { bio } = req.body;
 
-  const updatedUser = await User.findByIdAndUpdate(user, { bio: bio });
+  const updatedUser = await User.findByIdAndUpdate(user, { bio });
 
   res.status(200).json({
     status: "success",
     message: "Bio updated successfully",
+    bio,
   });
 });

@@ -30,12 +30,12 @@ const style = {
 const Profile = ({ user }) => {
   const navigate = useNavigate();
 
-  user.bio = "This is profile of a software developer";
+  // user.bio = "This is profile of a software developer";
   const theme = useTheme();
   const [isLoading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
   const [isModalOpen, setModalStatus] = useState(false);
-  const [bio, setBio] = useState(user.bio);
+  const [bio, setBio] = useState(user.bio ? user.bio : "No bio added yet");
   const [data, setData] = useState(bio);
 
   useEffect(() => {
@@ -56,14 +56,17 @@ const Profile = ({ user }) => {
   const updateBio = () => {
     //need to change api endpoints & token
     axios
-      .patch("/user/profile", bio)
+      .patch("/api/user/profile", { bio: data })
       .then((res) => {
+        setModalStatus(false);
+        console.log(res);
         setBio(res.data.bio);
         setData(res.data.bio);
       })
       .catch((err) => {
+        setModalStatus(false);
         setData(bio);
-        if (err.response) alert(err.resonse.data);
+        if (err.response) alert(err.response.data);
         else alert(err.message);
       });
   };
