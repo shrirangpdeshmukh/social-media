@@ -132,7 +132,7 @@ const Post = ({ user }) => {
 
   useEffect(() => {
     if (post) {
-      let find = post.votes.find((vote) => vote.createdBy === user._id);
+      let find = post.votes.find((vote) => vote.createdBy === user?._id);
       console.log(find);
       if (find) setLikeStatus(true);
       setLikes(post.votes.length);
