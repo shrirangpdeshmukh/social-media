@@ -53,29 +53,34 @@ const Post = ({ user }) => {
 
   const handleClick = () => {
     if(!myLikeStatus) {
+      setLikeStatus(true);
+      setLikes(prev => prev+1);
       axios
         .post(`/api/vote/${post._id}`)
         .then(res => {
           console.log(res);
-          setLikeStatus(true);
-          setLikes(prev => prev+1);
+          
         })
         .catch(err => {
           console.log(err);
           alert("some error occurred!!!");
+          setLikeStatus(false);
+          setLikes(prev => prev-1);
         })
     }
     else {
+      setLikeStatus(false);
+      setLikes(prev => prev-1);
       axios
         .delete(`/api/vote/${post._id}`)
         .then(res => {
           console.log(res);
-          setLikeStatus(false);
-          setLikes(prev => prev-1);
         })
         .catch(err => {
           console.log(err);
           alert("some error occurred!!!");
+          setLikeStatus(true);
+          setLikes(prev => prev+1);
         })
     }
   }
