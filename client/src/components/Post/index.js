@@ -10,8 +10,8 @@ import {
   Divider,
   Grid,
   IconButton,
+  Skeleton,
   Typography,
-  Stack,
 } from "@mui/material";
 import { ChevronLeftRounded, ChevronRightRounded } from "@mui/icons-material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -22,6 +22,23 @@ import moment from "moment";
 
 let images = [];
 
+const showTime = (time) => {
+  let t = new Date(time);
+  t = Date.now() - t.getTime();
+  if (t < 0) return "0s";
+
+  t = parseInt(t / 1000);
+
+  let str = "";
+  if (t < 60) str = t + "s";
+  else if (t < 3600) str = parseInt(t / 60) + "m";
+  else if (t < 86400) str = parseInt(t / 3600) + "h";
+  else if (t < 86400 * 7) str = parseInt(t / 86400) + "d";
+  else str = parseInt(t / (86400 * 7)) + "w";
+
+  return str;
+};
+
 const ShowImage = ({ name }) => {
   const [loaded, setLoaded] = useState(false);
 
@@ -30,17 +47,25 @@ const ShowImage = ({ name }) => {
   }, [name]);
 
   return (
-    <img
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "contain",
-        opacity: loaded ? 1 : 0,
-      }}
-      src={`/api/files/${name}`}
-      alt={"image-" + name}
-      onLoad={() => setLoaded(true)}
-    />
+    <>
+      <img
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          display: loaded ? "block" : "none",
+        }}
+        src={`/api/files/${name}`}
+        alt={"image-" + name}
+        onLoad={() => setLoaded(true)}
+      />
+      {!loaded && (
+        <Skeleton
+          variant="rectangular"
+          style={{ width: "100%", height: "100%" }}
+        />
+      )}
+    </>
   );
 };
 
@@ -55,6 +80,8 @@ const Post = ({ user }) => {
   const [caption, setCaption] = useState("");
 
   const handleClick = () => {
+    if (!user) return;
+
     if (!myLikeStatus) {
       setLikeStatus(true);
       setLikes((prev) => prev + 1);
@@ -114,7 +141,7 @@ const Post = ({ user }) => {
     axios
       .get(`/api/posts/${id}`)
       .then((res) => {
-        console.log({ post: res.data.post });
+        // console.log({ post: res.data.post });
         setPost(res.data.post);
         setPosting(false);
         setComment("");
@@ -133,8 +160,10 @@ const Post = ({ user }) => {
 
   useEffect(() => {
     if (post) {
+      loadImages();
+
       let find = post.votes.find((vote) => vote.createdBy === user?._id);
-      console.log(find);
+
       if (find) setLikeStatus(true);
       setLikes(post.votes.length);
     }
@@ -223,6 +252,7 @@ const Post = ({ user }) => {
                 <Box
                   style={{
                     height: "min(80vmax, 500px)",
+                    width: "100%",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -288,11 +318,11 @@ const Post = ({ user }) => {
               <Box borderTop="1px solid #ccc">
                 <Grid container>
                   <Grid item ml={1}>
-                    <IconButton onClick={handleClick}>
+                    <IconButton onClick={handleClick} disabled={!user}>
                       {!myLikeStatus && <FavoriteBorderIcon />}
                       {myLikeStatus && <FavoriteIcon color="error" />}
                     </IconButton>{" "}
-                    {likes} likes
+                    {likes} {likes === 1 ? "like" : "likes"}
                   </Grid>
                 </Grid>
               </Box>
@@ -322,12 +352,17 @@ const Post = ({ user }) => {
                       {post.caption.split(" ").map((cap, index) => {
                         if (cap[0] === "#")
                           return (
-                            <a
+                            <Box
                               key={index + 1}
-                              href={`/post/tag/${cap.substring(1)}`}
+                              component={Link}
+                              to={`/post/tag/${cap.substring(1)}`}
+                              style={{
+                                textDecoration: "none",
+                                color: "rgb(0,0,238)",
+                              }}
                             >
                               {cap}{" "}
-                            </a>
+                            </Box>
                           );
                         else return cap + " ";
                       })}
@@ -342,8 +377,8 @@ const Post = ({ user }) => {
                         <Box
                           style={{
                             display: "flex",
-                            height: "40px",
                             position: "relative",
+                            paddingBottom: "15px",
                           }}
                           key={"comment-" + index}
                         >
@@ -353,7 +388,7 @@ const Post = ({ user }) => {
                               style={{ width: "25px", height: "25px" }}
                             />
                           </Box>
-                          <Box>
+                          <Box style={{ paddingRight: "22px" }}>
                             <Typography
                               style={{ fontSize: "17px", textAlign: "left" }}
                             >
@@ -367,10 +402,11 @@ const Post = ({ user }) => {
                               style={{
                                 fontSize: "12px",
                                 position: "absolute",
-                                right: "0",
+                                right: 0,
+                                top: 3,
                               }}
                             >
-                              {moment(comment.createdAt).fromNow(true)}
+                              {showTime(comment.createdAt)}
                             </Typography>
                           </Box>
                         </Box>

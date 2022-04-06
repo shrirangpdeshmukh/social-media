@@ -42,7 +42,14 @@ const getRoutes = (user, setUser, load, setLoad, drawerOpen, toggleDrawer) => {
       {
         path: "/",
         element: (
-          <Layout load={load} setLoad={setLoad} setUser={setUser} user={user} />
+          <Layout
+            load={load}
+            setLoad={setLoad}
+            setUser={setUser}
+            user={user}
+            drawerOpen={drawerOpen}
+            toggleDrawer={toggleDrawer}
+          />
         ),
         children: [
           {
@@ -60,7 +67,15 @@ const getRoutes = (user, setUser, load, setLoad, drawerOpen, toggleDrawer) => {
   return [
     {
       path: "/",
-      element: <Layout load={load} setUser={setUser} user={user} />,
+      element: (
+        <Layout
+          load={load}
+          setUser={setUser}
+          user={user}
+          drawerOpen={drawerOpen}
+          toggleDrawer={toggleDrawer}
+        />
+      ),
       children: [
         {
           path: "/home",

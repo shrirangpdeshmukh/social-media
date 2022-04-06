@@ -40,9 +40,9 @@ function App() {
     getRoutes(user, updateUser, load, updateLoad, drawerOpen, toggleDrawer)
   );
 
-  useEffect(() => {
-    console.log({ user });
-  }, [user]);
+  // useEffect(() => {
+  //   console.log({ user });
+  // }, [user]);
 
   return (
     <ThemeProvider theme={theme}>

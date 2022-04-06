@@ -30,26 +30,29 @@ export default function SearchDrawer({ drawerOpen, drawerToggle }) {
   const search = () => {
     if (!query) {
       setResults({ hashtags: [], users: [] });
+      return;
     }
-    if (query) {
-      let searchQuery = query;
-      let isTag = false;
 
-      if (query.includes("#") && query[0] === "#") {
-        searchQuery = query.substring(1);
-        isTag = true;
-      }
+    let searchQuery = query;
+    let isTag = false;
 
-      if (searchQuery) {
-        axios
-          .get(`/api/search?query=${searchQuery}&tag=${isTag}`)
-          .then((res) => {
-            console.log(res);
-            setResults(res.data.results);
-          })
-          .catch((err) => console.log(err));
-      }
+    if (query.includes("#") && query[0] === "#") {
+      searchQuery = query.substring(1);
+      isTag = true;
     }
+
+    if (!searchQuery) {
+      setResults({ hashtags: [], users: [] });
+      return;
+    }
+
+    axios
+      .get(`/api/search?query=${searchQuery}&tag=${isTag}`)
+      .then((res) => {
+        console.log(res);
+        setResults(res.data.results);
+      })
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
@@ -61,7 +64,7 @@ export default function SearchDrawer({ drawerOpen, drawerToggle }) {
     setQuery((query) => e.target.value);
   };
 
-  const toggleDrawer = (open) => (event) => {
+  const toggleDrawer = (open) => {
     if (!open) {
       setQuery("");
     }
@@ -88,6 +91,7 @@ export default function SearchDrawer({ drawerOpen, drawerToggle }) {
         <OutlinedInput
           id="search"
           value={query}
+          autoFocus
           onChange={handleChange}
           endAdornment={
             <InputAdornment position="end">
@@ -122,6 +126,11 @@ export default function SearchDrawer({ drawerOpen, drawerToggle }) {
                   }}
                   component={Link}
                   to={`/user/${account._id}`}
+                  onClick={() => {
+                    console.log("clicked");
+                    toggleDrawer(false);
+                  }}
+                  // onClick={() => toggleDrawer(false)}
                 >
                   <Avatar src={account?.img} alt={account?.firstname} />
                   <Stack direction="column" style={{ paddingLeft: "10px" }}>
@@ -147,6 +156,10 @@ export default function SearchDrawer({ drawerOpen, drawerToggle }) {
                   }}
                   component={Link}
                   to={`post/tag/${hashtag.name}`}
+                  onClick={() => {
+                    console.log("clicked");
+                    toggleDrawer(false);
+                  }}
                 >
                   <Avatar>#</Avatar>
                   <Stack direction="column" style={{ paddingLeft: "10px" }}>
@@ -166,7 +179,11 @@ export default function SearchDrawer({ drawerOpen, drawerToggle }) {
   );
 
   return (
-    <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+    <Drawer
+      anchor="right"
+      open={drawerOpen}
+      onClose={() => toggleDrawer(false)}
+    >
       {list()}
     </Drawer>
   );

@@ -9,6 +9,7 @@ import {
   Grid,
   IconButton,
   Modal,
+  Skeleton,
   TextField,
   Typography,
   useTheme,
@@ -25,6 +26,36 @@ const style = {
   border: "2px solid #eee",
   boxShadow: 24,
   p: 4,
+};
+
+const ShowImage = ({ name }) => {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(false);
+  }, [name]);
+
+  return (
+    <>
+      <img
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          display: loaded ? "block" : "none",
+        }}
+        src={`/api/files/${name}`}
+        alt={"image-" + name}
+        onLoad={() => setLoaded(true)}
+      />
+      {!loaded && (
+        <Skeleton
+          variant="rectangular"
+          style={{ width: "100%", height: "100%", minWidth: "200px" }}
+        />
+      )}
+    </>
+  );
 };
 
 const Profile = ({ user }) => {
@@ -137,14 +168,16 @@ const Profile = ({ user }) => {
             <Typography fontSize="17px" color="#333" padding="10px 40px">
               {bio !== null ? (bio.length ? bio : "No bio added yet") : null}
             </Typography>
-            <IconButton
-              style={{ position: "absolute", top: 0, right: 0 }}
-              onClick={() => {
-                setModalStatus(true);
-              }}
-            >
-              <EditIcon />
-            </IconButton>
+            {user && user?._id === userData?._id && (
+              <IconButton
+                style={{ position: "absolute", top: 0, right: 0 }}
+                onClick={() => {
+                  setModalStatus(true);
+                }}
+              >
+                <EditIcon />
+              </IconButton>
+            )}
           </Box>
         </Grid>
       </Grid>
@@ -180,15 +213,7 @@ const Profile = ({ user }) => {
                   component={Link}
                   to={`/post/${post._id}`}
                 >
-                  <img
-                    src={"/api/files/" + post.image[0]}
-                    alt={"post-image-" + index}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
+                  <ShowImage name={post.image[0]} />
                 </Box>
               );
             })}

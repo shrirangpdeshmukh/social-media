@@ -38,10 +38,18 @@ const DisplayPost = ({ post }) => {
         >
           <Avatar src={post.createdBy?.img} alt={post.createdBy?.firstname} />
           <Stack direction="column">
-            <Typography style={{ paddingLeft: "10px", fontWeight: 600 }}>
+            <Typography
+              style={{
+                paddingLeft: "10px",
+                fontWeight: 700,
+                textAlign: "left",
+              }}
+            >
               {post.createdBy?.firstname}
             </Typography>
-            <Typography style={{ paddingLeft: "10px", fontWeight: 600 }}>
+            <Typography
+              style={{ paddingLeft: "10px", fontWeight: 400, fontSize: "14px" }}
+            >
               {moment(post?.createdAt).fromNow()}
             </Typography>
           </Stack>
